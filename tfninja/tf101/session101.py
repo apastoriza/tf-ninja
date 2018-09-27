@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import tensorflow as tf
+
 from tfninja.utils import loggerfactory
 
 logger = loggerfactory.get_logger(__name__)
