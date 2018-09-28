@@ -7,10 +7,10 @@ from tfninja.utils import loggerfactory
 
 logger = loggerfactory.get_logger(__name__)
 
-scalar = tf.constant(100)
-vector = tf.constant([1, 2, 3, 4, 5])
-matrix = tf.constant([[1, 2, 3], [4, 5, 6]])
-cube_matrix = tf.constant([
+SCALAR = tf.constant(100)
+VECTOR = tf.constant([1, 2, 3, 4, 5])
+MATRIX = tf.constant([[1, 2, 3], [4, 5, 6]])
+CUBE_MATRIX = tf.constant([
     [
         [1], [2], [3]
     ], [
@@ -20,15 +20,15 @@ cube_matrix = tf.constant([
     ]
 ])
 
-logger.info('scalar    (native): %s', scalar.get_shape())
-logger.info('vector    (native): %s', vector.get_shape())
-logger.info('matrix    (native): %s', matrix.get_shape())
-logger.info('cube      (native): %s', cube_matrix.get_shape())
+logger.info('scalar    (native): %s', SCALAR.get_shape())
+logger.info('vector    (native): %s', VECTOR.get_shape())
+logger.info('matrix    (native): %s', MATRIX.get_shape())
+logger.info('cube      (native): %s', CUBE_MATRIX.get_shape())
 
 # create a tf.constant() from numpy array
 np_vector = np.array([6, 7, 8, 9, 10])
-vector2 = tf.constant(np_vector)
-logger.info('vector    (numpy ): %s', vector2.get_shape())
+VECTOR2 = tf.constant(np_vector)
+logger.info('vector    (numpy ): %s', VECTOR2.get_shape())
 
 # another way to create a tensor from numpy array
 np_3d = np.array([
@@ -46,5 +46,5 @@ np_3d = np.array([
         [24, 25, 26]
     ]
 ])
-tensor_3d = tf.convert_to_tensor(np_3d, dtype=tf.float64)
-logger.info('tensor_3d (numpy ): %s', vector2.get_shape())
+TENSOR_3D = tf.convert_to_tensor(np_3d, dtype=tf.float64)
+logger.info('tensor_3d (numpy ): %s', TENSOR_3D.get_shape())
