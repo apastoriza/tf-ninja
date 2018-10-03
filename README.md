@@ -28,5 +28,5 @@ Session boarding with TensorBoard: Optimizing a single neuron running a model/fu
 ## tf102
 Adding some more complexity
 
-### classifier101
+### softmax101
 Using softmax classifier on [MNIST database](http://yann.lecun.com/exdb/mnist/) of handwritten digits
