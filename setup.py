@@ -17,7 +17,7 @@ VERSION = None
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'numpy', 'tensorflow'
+    'matplotlib', 'numpy', 'tensorflow'
 ]
 
 # What packages are optional?

@@ -22,8 +22,11 @@ Multiple returns un a single session run
 ### session104
 Using num session NumPy in session
 
+### session105
+Session boarding with TensorBoard: Optimizing a single neuron running a model/function. 
+
 ## tf102
 Adding some more complexity
 
-### session101
-Session boarding with TensorBoard: Optimizing a single neuron running a model/function. 
+### classifier101
+Using softmax classifier on [MNIST database](http://yann.lecun.com/exdb/mnist/) of handwritten digits
