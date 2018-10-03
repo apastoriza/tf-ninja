@@ -32,7 +32,7 @@ optimizer = tf.train.GradientDescentOptimizer(DESCENT_OPTIMIZER).minimize(loss_f
 
 
 def setup_tensor_board(session):
-    log_dir = config.paths['dir'] + config.paths['logs']
+    log_dir = config.paths['dir'] + '/logs/tfninja_session105'
 
     # define the parameters to be displayed in TensorBoard
     for value in [INPUT_VALUE, EXPECTED_OUTPUT, weight, model, loss_function]:
