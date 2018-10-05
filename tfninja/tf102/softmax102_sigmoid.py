@@ -13,57 +13,76 @@ logger = loggerfactory.get_logger(__name__)
 
 BATCH_SIZE = 100
 TRAINING_EPOCHS = 1000
-EXPECTED_ACCURACY = 0.90
+EXPECTED_ACCURACY = 0.97
 LEARNING_RATE = 0.005
-LAYER_NEURONS = 10
+
+LAYER_NEURONS_1 = 200
+LAYER_NEURONS_2 = 100
+LAYER_NEURONS_3 = 60
+LAYER_NEURONS_4 = 30
+LAYER_NEURONS_5 = 10
 
 # About NMIST database
 NMIST_IMAGE_PX_WIDTH = 28
 NMIST_IMAGE_PX_HEIGHT = 28
+NMIST_IMAGE_SIZE = NMIST_IMAGE_PX_WIDTH * NMIST_IMAGE_PX_HEIGHT
 
+X_image = tf.placeholder(tf.float32, [None, NMIST_IMAGE_SIZE], name='input')
+Y_probabilities = tf.placeholder(tf.float32, [None, LAYER_NEURONS_5])
 
-X_image = tf.placeholder(tf.float32, [None, NMIST_IMAGE_PX_WIDTH * NMIST_IMAGE_PX_HEIGHT], name='input')
-Y_probabilities = tf.placeholder(tf.float32, [None, LAYER_NEURONS])
-W = tf.Variable(tf.zeros([NMIST_IMAGE_PX_WIDTH * NMIST_IMAGE_PX_HEIGHT, LAYER_NEURONS]))
-bias_tensor = tf.Variable(tf.zeros([LAYER_NEURONS]))
-XX_flatten_images = tf.reshape(X_image, [-1, NMIST_IMAGE_PX_WIDTH * NMIST_IMAGE_PX_HEIGHT])
+W_layer_1 = tf.Variable(tf.truncated_normal([NMIST_IMAGE_SIZE, LAYER_NEURONS_1], stddev=0.1))
+bias_tensor_1 = tf.Variable(tf.zeros([LAYER_NEURONS_1]))
+W_layer_2 = tf.Variable(tf.truncated_normal([LAYER_NEURONS_1, LAYER_NEURONS_2], stddev=0.1))
+bias_tensor_2 = tf.Variable(tf.zeros([LAYER_NEURONS_2]))
+W_layer_3 = tf.Variable(tf.truncated_normal([LAYER_NEURONS_2, LAYER_NEURONS_3], stddev=0.1))
+bias_tensor_3 = tf.Variable(tf.zeros([LAYER_NEURONS_3]))
+W_layer_4 = tf.Variable(tf.truncated_normal([LAYER_NEURONS_3, LAYER_NEURONS_4], stddev=0.1))
+bias_tensor_4 = tf.Variable(tf.zeros([LAYER_NEURONS_4]))
+W_layer_5 = tf.Variable(tf.truncated_normal([LAYER_NEURONS_4, LAYER_NEURONS_5], stddev=0.1))
+bias_tensor_5 = tf.Variable(tf.zeros([LAYER_NEURONS_5]))
 
-evidence = tf.matmul(XX_flatten_images, W) + bias_tensor
-Y = tf.nn.softmax(evidence, name='output')
+XX_flatten_images = tf.reshape(X_image, [-1, NMIST_IMAGE_SIZE])
 
-softmax_cross_entropy_with_logits = tf.nn.softmax_cross_entropy_with_logits_v2(labels=Y_probabilities, logits=Y)
+Y_output_1 = tf.nn.sigmoid(tf.matmul(XX_flatten_images, W_layer_1) + bias_tensor_1)
+Y_output_2 = tf.nn.sigmoid(tf.matmul(Y_output_1, W_layer_2) + bias_tensor_2)
+Y_output_3 = tf.nn.sigmoid(tf.matmul(Y_output_2, W_layer_3) + bias_tensor_3)
+Y_output_4 = tf.nn.sigmoid(tf.matmul(Y_output_3, W_layer_4) + bias_tensor_4)
+Y_logits = tf.matmul(Y_output_4, W_layer_5) + bias_tensor_5
+Y = tf.nn.softmax(Y_logits)
+
+softmax_cross_entropy_with_logits = tf.nn.softmax_cross_entropy_with_logits(logits=Y_logits, labels=Y_probabilities)
 cross_entropy = tf.reduce_mean(softmax_cross_entropy_with_logits)
 correct_prediction = tf.equal(tf.argmax(Y, 1), tf.argmax(Y_probabilities, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 # try to switch between gradient and adam optimizer to see the effect
-# train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
-train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_entropy)
+# train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_entropy)
+train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
 
 
 def setup_tensor_board(session):
-    logs_path = config.paths['dir'] + '/logs/tfninja_softmax101'
+    logs_path = config.paths['dir'] + '/logs/tfninja_softmax102_sigmoid'
 
     tf.summary.scalar('cost', cross_entropy)
     tf.summary.scalar('accuracy', accuracy)
-
     summaries = tf.summary.merge_all()
 
     summary_writer = tf.summary.FileWriter(logs_path, graph=session.graph)
-
     return summaries, summary_writer
 
 
 def run_session():
     with tf.Session() as session:
+
         session.run(tf.global_variables_initializer())
 
         summaries, summary_writer = setup_tensor_board(session)
 
         logger.info('-------TRAINING INIT-------')
-        epoch = 0
-        accuracy_value = 0.0
+        accuracy_value = 0
         data_sets = nmist_input_data.gather_data()
+
+        epoch = 0
         while (epoch < TRAINING_EPOCHS) and (accuracy_value <= EXPECTED_ACCURACY):
             batch_count = int(data_sets.train.num_examples / BATCH_SIZE)
             for i in range(batch_count):
@@ -72,13 +91,12 @@ def run_session():
                     X_image: batch_x,
                     Y_probabilities: batch_y
                 })
-                summary_writer.add_summary(summary, epoch * batch_count + i)
 
+                summary_writer.add_summary(summary, epoch * batch_count + i)
             accuracy_value = accuracy.eval(feed_dict={
                 X_image: data_sets.test.images,
                 Y_probabilities: data_sets.test.labels
             })
-
             if epoch % 10 == 0:
                 logger.info('Epoch: %s', epoch)
                 logger.info('Expected accuracy: %s', accuracy_value)

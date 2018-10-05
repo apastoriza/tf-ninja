@@ -29,4 +29,8 @@ Session boarding with TensorBoard: Optimizing a single neuron running a model/fu
 Adding some more complexity
 
 ### softmax101
-Using softmax classifier on [MNIST database](http://yann.lecun.com/exdb/mnist/) of handwritten digits
+Using softmax classifier on [MNIST database](http://yann.lecun.com/exdb/mnist/) of handwritten digits in a 
+single layer of neurons
+
+### softmax102_sigmoid
+softmax101 with five layers
