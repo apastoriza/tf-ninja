@@ -44,10 +44,10 @@ bias_tensor_5 = tf.Variable(tf.zeros([LAYER_NEURONS_5]))
 
 XX_flatten_images = tf.reshape(X_image, [-1, NMIST_IMAGE_SIZE])
 
-Y_output_1 = tf.nn.sigmoid(tf.matmul(XX_flatten_images, W_layer_1) + bias_tensor_1)
-Y_output_2 = tf.nn.sigmoid(tf.matmul(Y_output_1, W_layer_2) + bias_tensor_2)
-Y_output_3 = tf.nn.sigmoid(tf.matmul(Y_output_2, W_layer_3) + bias_tensor_3)
-Y_output_4 = tf.nn.sigmoid(tf.matmul(Y_output_3, W_layer_4) + bias_tensor_4)
+Y_output_1 = tf.nn.relu(tf.matmul(XX_flatten_images, W_layer_1) + bias_tensor_1)
+Y_output_2 = tf.nn.relu(tf.matmul(Y_output_1, W_layer_2) + bias_tensor_2)
+Y_output_3 = tf.nn.relu(tf.matmul(Y_output_2, W_layer_3) + bias_tensor_3)
+Y_output_4 = tf.nn.relu(tf.matmul(Y_output_3, W_layer_4) + bias_tensor_4)
 Y_logits = tf.matmul(Y_output_4, W_layer_5) + bias_tensor_5
 Y = tf.nn.softmax(Y_logits)
 
@@ -62,7 +62,7 @@ train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_ent
 
 
 def setup_tensor_board(session):
-    logs_path = config.paths['dir'] + '/logs/tfninja_softmax102_sigmoid'
+    logs_path = config.paths['dir'] + '/logs/tfninja_softmax102_relu'
 
     tf.summary.scalar('cost', cross_entropy)
     tf.summary.scalar('accuracy', accuracy)
@@ -104,7 +104,6 @@ def run_session():
                 logger.info('Current accuracy: %s', accuracy_value)
 
             epoch += 1
-
         end_time_in_millis = time.current_time_in_millis()
         logger.info('Epoch: %s', epoch)
         logger.info('-------TRAINING DONE-------')

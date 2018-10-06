@@ -8,6 +8,7 @@ from random import randint
 from tfninja.resources import config
 from tfninja.tf102 import nmist_input_data
 from tfninja.utils import loggerfactory
+from tfninja.utils import time
 
 logger = loggerfactory.get_logger(__name__)
 
@@ -42,7 +43,7 @@ train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_ent
 
 
 def setup_tensor_board(session):
-    logs_path = config.paths['dir'] + '/logs/tfninja_softmax101'
+    logs_path = config.paths['dir'] + '/logs/tfninja_softmax102'
 
     tf.summary.scalar('cost', cross_entropy)
     tf.summary.scalar('accuracy', accuracy)
@@ -61,6 +62,7 @@ def run_session():
         summaries, summary_writer = setup_tensor_board(session)
 
         logger.info('-------TRAINING INIT-------')
+        init_time_in_millis = time.current_time_in_millis()
         epoch = 0
         accuracy_value = 0.0
         data_sets = nmist_input_data.gather_data()
@@ -81,18 +83,20 @@ def run_session():
 
             if epoch % 10 == 0:
                 logger.info('Epoch: %s', epoch)
-                logger.info('Expected accuracy: %s', accuracy_value)
+                logger.info('Current accuracy: %s', accuracy_value)
 
             epoch += 1
 
+        end_time_in_millis = time.current_time_in_millis()
         logger.info('Epoch: %s', epoch)
-        logger.info('Expected accuracy: %s', accuracy_value)
         logger.info('-------TRAINING DONE-------')
+        logger.info('Total time: %s millis', (end_time_in_millis - init_time_in_millis))
+        logger.info('Expected accuracy: %s', accuracy_value)
         predict_numbers(session, data_sets.test)
 
 
 def predict_numbers(session, test_data_set):
-    trials = 100
+    trials = 1000
     rights = 0
     for _ in range(trials):
         num = randint(0, test_data_set.images.shape[0])
@@ -109,7 +113,7 @@ def predict_numbers(session, test_data_set):
             logger.error('Neural Network predicted %s', classification[0])
             logger.error('Real label is: %s', np.argmax(test_data_set.labels[num]))
 
-    logger.info('Real accuracy: %s', (rights / trials))
+    logger.info('Real accuracy: %s/%s = %s', rights, trials, (rights / trials))
 
 
 if __name__ == '__main__':

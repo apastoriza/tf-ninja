@@ -1,5 +1,5 @@
-# tf-ninja
-TensorFlow samples for Ninja Talk
+# TensorFlow samples to support Ninja Talk 
+A compilation of sample to introduce in the TersorFlow ecosystem
 
 ## hello
 A hello world 
@@ -25,12 +25,47 @@ Using num session NumPy in session
 ### session105
 Session boarding with TensorBoard: Optimizing a single neuron running a model/function. 
 
+### softmax101
+If you want the outputs of a network to be interpretable as posterior
+probabilities for a categorical target variable, it is highly desirable for
+those outputs to lie between zero and one and to sum to one. 
+The purpose of the softmax activation function is to enforce these constraints on the
+outputs.  
+
+In the example: 
+ - We take an input of [1, 2, 3, 4, 1, 2, 3], the softmax of that is [0.024, 0.064, 0.175, 0.475, 0.024, 0.064, 0.175]. 
+ - The output has most of its weight where the '4' was in the original input. 
+ - This is what the function is normally used for: to highlight the largest values and suppress values which are significantly below the maximum value.
+
+_NOTE: Raw softmax function in here. No tensorflow API in order tu fully understand._
+
+### softmax101_numpy
+A softmax sample using numpy. Inputs changed in order to **clarify that softmax is not scale invariant**.
+
 ## tf102
 Adding some more complexity
 
-### softmax101
+### softmax102
+The softmax function is often used in the final layer of a neural network-based classifier.
 Using softmax classifier on [MNIST database](http://yann.lecun.com/exdb/mnist/) of handwritten digits in a 
 single layer of neurons
 
 ### softmax102_sigmoid
-softmax101 with five layers
+A _Softmax normalization_. Use the Sigmoid function for normalization is a simple way to reduce the influence of extreme values 
+(outlier) in the data without removing them from the dataset.
+
+In the sample, A five layers network is built.
+ - The data are nonlinearly transformed using a sigmoidal functions as the output of every layer.
+ - Last layer, classify using softmax
+
+
+### softmax102_relu
+Change the Sigmoid function with the Linear Rectifier (ReLU). ReLU is faster than Sigmoid because it does not require exponential 
+calculus, wich is hard on computing.
+
+
+
+# Sources used for this purpose
+ - [ai-faq](http://www.faqs.org/faqs/ai-faq/)  
+ - [Book: Deep Learning with TensorFlow by Packt](https://www.packtpub.com/big-data-and-business-intelligence/deep-learning-tensorflow)
+ - [Book: TensorFlow for Deep Learning](http://shop.oreilly.com/product/0636920065869.do)
