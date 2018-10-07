@@ -23,7 +23,10 @@ Multiple returns un a single session run
 Using num session NumPy in session
 
 ### session105
-Session boarding with TensorBoard: Optimizing a single neuron running a model/function. 
+Session boarding with TensorBoard: Optimizing a single neuron running a model/function.
+
+## tf102
+Feed-forward neural networks and classification.
 
 ### softmax101
 If you want the outputs of a network to be interpretable as posterior
@@ -41,9 +44,6 @@ _NOTE: Raw softmax function in here. No tensorflow API in order tu fully underst
 
 ### softmax101_numpy
 A softmax sample using numpy. Inputs changed in order to **clarify that softmax is not scale invariant**.
-
-## tf102
-Adding some more complexity
 
 ### softmax102
 The softmax function is often used in the final layer of a neural network-based classifier.
