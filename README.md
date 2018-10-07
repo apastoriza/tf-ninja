@@ -71,6 +71,17 @@ neuron activation in the next layer is _dropped_.
 
 Besides, learning rete is also a variable input.
 
+## tf103
+Convolutional neural networks and classification.
+
+### lenet101_softmax
+
+![Alt text](img/lenet101_softmax_01.png "First convolutional layers")
+
+
+![Alt text](img/lenet101_softmax_02.png "Last convolutional layers")
+
+
 
 # Sources used for this purpose
  - [ai-faq](http://www.faqs.org/faqs/ai-faq/)  
