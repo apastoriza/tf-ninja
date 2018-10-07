@@ -51,18 +51,25 @@ Using softmax classifier on [MNIST database](http://yann.lecun.com/exdb/mnist/) 
 single layer of neurons
 
 ### softmax102_sigmoid
-A _Softmax normalization_. Use the Sigmoid function for normalization is a simple way to reduce the influence of extreme values 
+A _Softmax Normalization_. Use the Sigmoid function for normalization is a simple way to reduce the influence of extreme values 
 (outlier) in the data without removing them from the dataset.
 
 In the sample, A five layers network is built.
- - The data are nonlinearly transformed using a sigmoidal functions as the output of every layer.
+ - The data are non-linearly transformed using a sigmoidal functions as the output of every layer.
  - Last layer, classify using softmax
 
 
 ### softmax102_relu
 Change the Sigmoid function with the Linear Rectifier (ReLU). ReLU is faster than Sigmoid because it does not require exponential 
-calculus, wich is hard on computing.
+calculus, wich is hard on computing. ReLU comes at a price and accuracy may penalty to pay. 
+However ReLU but works fine with the right amount of data.   
 
+### softmax102_relu_dropout
+A _Dropout optimization_. One step further. Reduction of the weights to be updated in the learning phase. 
+This technique limits the connected neurons with the next layer by setting weights to `0` so, 
+neuron activation in the next layer is _dropped_.
+
+Besides, learning rete is also a variable input.
 
 
 # Sources used for this purpose
