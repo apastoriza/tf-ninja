@@ -6,7 +6,7 @@ import tensorflow as tf
 from random import randint
 
 from tfninja.resources import config
-from tfninja.tf102 import nmist_input_data
+from tfninja.resources import nmist_input_data
 from tfninja.utils import loggerfactory
 from tfninja.utils import time
 
