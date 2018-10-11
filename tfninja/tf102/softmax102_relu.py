@@ -6,7 +6,7 @@ import tensorflow as tf
 from random import randint
 
 from tfninja.resources import config
-from tfninja.resources import nmist_input_data
+from tfninja.resources import mnist_input_data
 from tfninja.utils import loggerfactory
 from tfninja.utils import time
 
@@ -23,15 +23,15 @@ LAYER_NEURONS_3 = 60
 LAYER_NEURONS_4 = 30
 LAYER_NEURONS_5 = 10
 
-# About NMIST database
-NMIST_IMAGE_PX_WIDTH = 28
-NMIST_IMAGE_PX_HEIGHT = 28
-NMIST_IMAGE_SIZE = NMIST_IMAGE_PX_WIDTH * NMIST_IMAGE_PX_HEIGHT
+# About MNIST database
+IMAGE_PX_WIDTH = 28
+IMAGE_PX_HEIGHT = 28
+IMAGE_SIZE = IMAGE_PX_WIDTH * IMAGE_PX_HEIGHT
 
-X_image = tf.placeholder(tf.float32, [None, NMIST_IMAGE_SIZE], name='input')
+X_image = tf.placeholder(tf.float32, [None, IMAGE_SIZE], name='input')
 Y_probabilities = tf.placeholder(tf.float32, [None, LAYER_NEURONS_5])
 
-W_layer_1 = tf.Variable(tf.truncated_normal([NMIST_IMAGE_SIZE, LAYER_NEURONS_1], stddev=0.1))
+W_layer_1 = tf.Variable(tf.truncated_normal([IMAGE_SIZE, LAYER_NEURONS_1], stddev=0.1))
 bias_tensor_1 = tf.Variable(tf.zeros([LAYER_NEURONS_1]))
 W_layer_2 = tf.Variable(tf.truncated_normal([LAYER_NEURONS_1, LAYER_NEURONS_2], stddev=0.1))
 bias_tensor_2 = tf.Variable(tf.zeros([LAYER_NEURONS_2]))
@@ -42,7 +42,7 @@ bias_tensor_4 = tf.Variable(tf.zeros([LAYER_NEURONS_4]))
 W_layer_5 = tf.Variable(tf.truncated_normal([LAYER_NEURONS_4, LAYER_NEURONS_5], stddev=0.1))
 bias_tensor_5 = tf.Variable(tf.zeros([LAYER_NEURONS_5]))
 
-XX_flatten_images = tf.reshape(X_image, [-1, NMIST_IMAGE_SIZE])
+XX_flatten_images = tf.reshape(X_image, [-1, IMAGE_SIZE])
 
 Y_output_1 = tf.nn.relu(tf.matmul(XX_flatten_images, W_layer_1) + bias_tensor_1)
 Y_output_2 = tf.nn.relu(tf.matmul(Y_output_1, W_layer_2) + bias_tensor_2)
@@ -51,7 +51,7 @@ Y_output_4 = tf.nn.relu(tf.matmul(Y_output_3, W_layer_4) + bias_tensor_4)
 Y_logits = tf.matmul(Y_output_4, W_layer_5) + bias_tensor_5
 Y = tf.nn.softmax(Y_logits)
 
-softmax_cross_entropy_with_logits = tf.nn.softmax_cross_entropy_with_logits(logits=Y_logits, labels=Y_probabilities)
+softmax_cross_entropy_with_logits = tf.nn.softmax_cross_entropy_with_logits_v2(logits=Y_logits, labels=Y_probabilities)
 cross_entropy = tf.reduce_mean(softmax_cross_entropy_with_logits) * 100
 correct_prediction = tf.equal(tf.argmax(Y, 1), tf.argmax(Y_probabilities, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -82,7 +82,7 @@ def run_session():
         logger.info('-------TRAINING INIT-------')
         init_time_in_millis = time.current_time_in_millis()
         accuracy_value = 0
-        data_sets = nmist_input_data.gather_data()
+        data_sets = mnist_input_data.gather_data()
 
         epoch = 0
         while (epoch < TRAINING_EPOCHS) and (accuracy_value <= EXPECTED_ACCURACY):

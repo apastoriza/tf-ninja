@@ -6,7 +6,7 @@ import tensorflow as tf
 from random import randint
 
 from tfninja.resources import config
-from tfninja.resources import nmist_input_data
+from tfninja.resources import mnist_input_data
 from tfninja.utils import loggerfactory
 from tfninja.utils import time
 
@@ -18,16 +18,16 @@ EXPECTED_ACCURACY = 0.90
 LEARNING_RATE = 0.005
 LAYER_NEURONS = 10
 
-# About NMIST database
-NMIST_IMAGE_PX_WIDTH = 28
-NMIST_IMAGE_PX_HEIGHT = 28
+# About MNIST database
+IMAGE_PX_WIDTH = 28
+IMAGE_PX_HEIGHT = 28
 
 
-X_image = tf.placeholder(tf.float32, [None, NMIST_IMAGE_PX_WIDTH * NMIST_IMAGE_PX_HEIGHT], name='input')
+X_image = tf.placeholder(tf.float32, [None, IMAGE_PX_WIDTH * IMAGE_PX_HEIGHT], name='input')
 Y_probabilities = tf.placeholder(tf.float32, [None, LAYER_NEURONS])
-W = tf.Variable(tf.zeros([NMIST_IMAGE_PX_WIDTH * NMIST_IMAGE_PX_HEIGHT, LAYER_NEURONS]))
+W = tf.Variable(tf.zeros([IMAGE_PX_WIDTH * IMAGE_PX_HEIGHT, LAYER_NEURONS]))
 bias_tensor = tf.Variable(tf.zeros([LAYER_NEURONS]))
-XX_flatten_images = tf.reshape(X_image, [-1, NMIST_IMAGE_PX_WIDTH * NMIST_IMAGE_PX_HEIGHT])
+XX_flatten_images = tf.reshape(X_image, [-1, IMAGE_PX_WIDTH * IMAGE_PX_HEIGHT])
 
 evidence = tf.matmul(XX_flatten_images, W) + bias_tensor
 Y = tf.nn.softmax(evidence, name='output')
@@ -65,7 +65,7 @@ def run_session():
         init_time_in_millis = time.current_time_in_millis()
         epoch = 0
         accuracy_value = 0.0
-        data_sets = nmist_input_data.gather_data()
+        data_sets = mnist_input_data.gather_data()
         while (epoch < TRAINING_EPOCHS) and (accuracy_value <= EXPECTED_ACCURACY):
             batch_count = int(data_sets.train.num_examples / BATCH_SIZE)
             for i in range(batch_count):
