@@ -8,12 +8,13 @@ from tfninja.resources import mnist_input_data
 from tfninja.utils import loggerfactory
 from tfninja.utils import tensorfactory
 
-batch_size = 128
-test_size = 256
+BATCH_SIZE = 128
+TEST_SIZE = 256
 NUM_CLASSES = 10
 LEARNING_RATE = 0.001
 DECAY = 0.9
-
+EXPECTED_ACCURACY = 0.99
+TRAINING_EPOCHS = 1000
 
 # About MNIST database
 IMAGE_PX_WIDTH = 28
@@ -78,10 +79,12 @@ def run_session():
     with tf.Session() as session:
         logger = loggerfactory.get_logger(__name__)
         session.run(tf.global_variables_initializer())
-        for i in range(5):
+        mean = 0
+        epoch = 0
+        while (epoch < TRAINING_EPOCHS) and (mean <= EXPECTED_ACCURACY):
             training_batch = zip(
-                range(0, len(train_x_reshape), batch_size),
-                range(batch_size, len(train_x_reshape) + 1, batch_size)
+                range(0, len(train_x_reshape), BATCH_SIZE),
+                range(BATCH_SIZE, len(train_x_reshape) + 1, BATCH_SIZE)
             )
             for start, end in training_batch:
                 session.run(optimizer, feed_dict={
@@ -93,7 +96,7 @@ def run_session():
 
             test_indices = np.arange(len(test_x_reshape))  # Get A Test Batch
             np.random.shuffle(test_indices)
-            test_indices = test_indices[0:test_size]
+            test_indices = test_indices[0:TEST_SIZE]
 
             session_prediction = session.run(predict_op, feed_dict={
                 X: test_x_reshape[test_indices],
@@ -103,7 +106,8 @@ def run_session():
             })
 
             mean = np.mean(np.argmax(test_y[test_indices], axis=1) == session_prediction)
-            logger.info('Epoch: %s - accuracy: %s', i, mean)
+            logger.info('Epoch: %s - accuracy: %s', epoch, mean)
+            epoch += 1
 
 
 if __name__ == '__main__':
